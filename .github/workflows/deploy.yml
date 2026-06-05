@@ -33,16 +33,14 @@ jobs:
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          # These three come from GitHub's locked "Secrets" vault (Step 4b).
+          # These three come from GitHub's locked "Secrets" vault.
+          # FTP_SERVER must be the hostname (ftp.azkashine.com), not a raw IP.
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Hostinger expects encrypted FTP (FTPS, explicit TLS over port 21).
-          # Plain "ftp" gets ignored and the connection times out.
-          protocol: ftps
-          port: 21
-          # Give the handshake more room than the 30s default.
-          timeout: 60000
+          # Plain FTP (the action's default) — this is what the main azkashine.com
+          # site uses and what Hostinger reliably accepts. FTPS handshakes were
+          # flaking out, so we don't set protocol/port/timeout overrides here.
           # WHERE the built files come FROM (on the robot's computer):
           local-dir: ./out/
           # WHERE they go TO. The deploybot FTP account is locked ("chrooted")
