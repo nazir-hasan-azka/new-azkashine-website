@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/*
+  Azkashine design tokens — extracted from the Figma "Landing Page 1" SVG.
+  Tailwind v4 is CSS-first: tokens declared in @theme generate utilities
+  (e.g. --color-brand → bg-brand / text-brand / border-brand).
+*/
+
+@theme {
+  /* Brand — signature cyan-blue */
+  --color-brand: #5cc2ed;
+  --color-brand-light: #85e2fe;
+  --color-brand-cyan: #0cfffc; /* bright pop used in illustrations */
+
+  /* Supporting blues */
+  --color-blue-500: #2185f8;
+  --color-blue-700: #1964ba;
+  --color-blue-900: #00357c;
+
+  /* Surfaces */
+  --color-background: #fafbff;
+  --color-surface: #f3f8fe;
+  --color-surface-2: #f9fafe;
+
+  /* Text */
+  --color-ink: #0f1125; /* headings / primary text */
+  --color-muted: #717276; /* body copy */
+  --color-muted-2: #838383;
+
+  /* Borders */
+  --color-border: #e4eafe;
+  --color-border-strong: #d3e7fe;
+
+  /* Accents (illustrations / badges) */
+  --color-accent-yellow: #ffe200;
+  --color-accent-orange: #ff7f22;
+  --color-accent-pink: #f9346c;
+  --color-accent-green: #adffd2;
+
+  /* Type */
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Page gutter: content sits in the 1520px design box (→ 200px margins at 1920),
+   never less than a 2rem gutter on smaller screens. */
+@utility page-gutter {
+  padding-inline: max(2rem, calc((100% - 1520px) / 2));
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
