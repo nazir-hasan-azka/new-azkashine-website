@@ -1,0 +1,45 @@
+name: Build and Deploy to Hostinger
+
+# WHEN does the robot wake up?
+on:
+  push:
+    branches: [main]      # every time you push to the "main" branch
+  workflow_dispatch: {}    # ...and a "Run" button you can click by hand in the Actions tab
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # the robot rents a fresh Linux computer for each run
+    steps:
+      # 1) Grab a copy of your code onto that fresh computer
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2) Install Node.js (the engine that runs Next.js)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm        # remember downloaded packages between runs = faster
+
+      # 3) Install the exact libraries listed in package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      # 4) Build the site into the out/ folder (our "plain files" from Step 1)
+      - name: Build static site
+        run: npm run build
+
+      # 5) Copy everything in out/ onto Hostinger over FTP
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # These three come from GitHub's locked "Secrets" vault (Step 4b).
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          # WHERE the built files come FROM (on the robot's computer):
+          local-dir: ./out/
+          # WHERE they go TO (the folder on Hostinger, from your home dir):
+          server-dir: domains/azkashine.com/public_html/test/
