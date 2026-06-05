@@ -37,8 +37,12 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp
+          # Hostinger expects encrypted FTP (FTPS, explicit TLS over port 21).
+          # Plain "ftp" gets ignored and the connection times out.
+          protocol: ftps
           port: 21
+          # Give the handshake more room than the 30s default.
+          timeout: 60000
           # WHERE the built files come FROM (on the robot's computer):
           local-dir: ./out/
           # WHERE they go TO (the folder on Hostinger, from your home dir):
