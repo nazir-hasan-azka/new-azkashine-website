@@ -45,5 +45,8 @@ jobs:
           timeout: 60000
           # WHERE the built files come FROM (on the robot's computer):
           local-dir: ./out/
-          # WHERE they go TO (the folder on Hostinger, from your home dir):
-          server-dir: domains/azkashine.com/public_html/test/
+          # WHERE they go TO. The deploybot FTP account is locked ("chrooted")
+          # to .../public_html, so from its point of view the subdomain folder
+          # is simply "test/". (We deliberately keep the "test/" leaf so a deploy
+          # can never write into the main site's root.)
+          server-dir: test/
