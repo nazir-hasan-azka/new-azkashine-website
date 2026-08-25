@@ -83,6 +83,15 @@ easings. Components pick from these; they do not invent timings.
   animations outrank normal declarations. A `.reveal-group` child and a `.lift` card must
   therefore be **different elements**, or hover transforms silently never apply.
 
+### Copy
+
+**Sentence case for every heading, nav label, and section title.** No title case anywhere —
+"What we do", not "What We Do". This was inconsistent once and is easy to reintroduce.
+
+Section copy should state something a reader can verify. Avoid sentences that describe a
+posture ("we start from the outcome, not the technology") — a competitor can print the
+same line. Point at products in production, capabilities the decks evidence, or numbers.
+
 ### Images
 
 - 18 curated images in `public/img/`, each as `name.webp` (banner) + `name-card.webp`.

@@ -40,7 +40,7 @@ export function Footer() {
           </div>
 
           <FooterColumn
-            title="What We Do"
+            title="What we do"
             links={[
               ...CATEGORIES.map((c) => ({
                 label: c.name,

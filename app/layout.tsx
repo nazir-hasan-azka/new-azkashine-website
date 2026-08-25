@@ -49,8 +49,6 @@ export default function RootLayout({
       className={`${figtree.variable} ${manrope.variable} antialiased`}
     >
       <body>
-        {/* `relative` anchors the home page's absolutely-positioned HeroBackdrop,
-            which must sit behind the navbar at the very top of the page. */}
         <div className="relative">
           <Navbar />
           {/* NOTE: cross-route View Transitions are not wired up. React 19.2 does not

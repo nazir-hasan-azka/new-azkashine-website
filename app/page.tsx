@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { HeroBackdrop } from "@/components/sections/HeroBackdrop";
 import { Hero } from "@/components/sections/Hero";
 import { CapabilityGrid } from "@/components/sections/CapabilityGrid";
-import { ProductGrid } from "@/components/sections/ProductCard";
+import { FeaturedProducts } from "@/components/sections/FeaturedProducts";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { Cta } from "@/components/sections/Cta";
 import { Container } from "@/components/ui/Container";
@@ -21,12 +20,11 @@ import { INDUSTRIES } from "@/lib/content/industries";
 export default function Home() {
   return (
     <>
-      <HeroBackdrop />
       <Hero />
 
       <CapabilityGrid
         heading="What we do"
-        lede="Three practices, twelve capabilities. The same taxonomy we use internally to describe the business — because it is the one that actually reflects how the work is organised."
+        lede="Three practices: the AI and automation that removes manual decisions, the platforms that run the work, and the cloud engineering and testing that keep both standing up. Twelve capabilities, and nine products built on them."
       />
 
       <WhyChooseUs />
@@ -76,33 +74,19 @@ export default function Home() {
         </Container>
       </section>
 
-      <section aria-labelledby="products-heading" className="py-16 lg:py-24">
-        <Container>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-4xl">
-              <h2
-                id="products-heading"
-                className="text-3xl font-bold text-ink sm:text-4xl lg:text-[48px]"
-              >
-                Our products
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-muted lg:text-xl">
-                Nine platforms built and operated by Azkashine — from financial compliance
-                automation to agentic AI, visitor management, and blue-collar hiring.
-              </p>
-            </div>
-            <Link
-              href="/products/"
-              className="inline-flex items-center gap-1.5 text-base font-semibold text-brand transition-colors hover:text-blue-700"
-            >
-              All products
-              <span aria-hidden="true">→</span>
-            </Link>
-          </div>
+      <FeaturedProducts products={PRODUCTS} />
 
-          <div className="mt-10 lg:mt-14">
-            <ProductGrid products={PRODUCTS} />
-          </div>
+      <section className="pb-16 lg:pb-24">
+        <Container>
+          <Link
+            href="/products/"
+            className="inline-flex items-center gap-1.5 text-base font-semibold text-brand transition-colors hover:text-blue-700"
+          >
+            See all nine products side by side
+            <span aria-hidden="true" className="nudge">
+              →
+            </span>
+          </Link>
         </Container>
       </section>
 

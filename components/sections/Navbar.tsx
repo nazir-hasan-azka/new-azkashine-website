@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
@@ -31,6 +32,24 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menu, setMenu] = useState<MenuId>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  /**
+   * The home hero is a full-viewport dark canvas, so the header sits transparently on
+   * top of it and only takes on its solid background once the reader scrolls past.
+   * Any open menu forces the solid treatment, otherwise the panel would float on nothing.
+   */
+  const overHero = pathname === "/" && !scrolled && !menu && !mobileOpen;
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 40);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   function closeAll() {
     setMenu(null);
     setMobileOpen(false);
@@ -89,7 +108,12 @@ export function Navbar() {
       onMouseLeave={() => {
         if (canHover()) setMenu(null);
       }}
-      className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-md"
+      className={cn(
+        "sticky top-0 z-50 transition-colors duration-300",
+        overHero
+          ? "border-b border-white/10 bg-transparent"
+          : "border-b border-border/70 bg-background/95 backdrop-blur-md",
+      )}
     >
       <Container>
         <nav className="flex h-20 items-center justify-between gap-6">
@@ -99,8 +123,11 @@ export function Navbar() {
             aria-label="Azkashine home"
             onClick={closeAll}
           >
+            {/* The colour logo sits at ~115/255 luminance, which is unreadable on the
+                dark hero. The light variant lifts luminance to ~206 while keeping the
+                blue/orange hues, rather than flattening to a white silhouette. */}
             <Image
-              src="/azkashine-logo.png"
+              src={overHero ? "/azkashine-logo-light.png" : "/azkashine-logo.png"}
               alt="Azkashine"
               width={133}
               height={37}
@@ -112,13 +139,14 @@ export function Navbar() {
           {/* Desktop menu */}
           <ul className="hidden items-center gap-8 lg:flex">
             <li onMouseEnter={() => canHover() && setMenu(null)}>
-              <TopLink href="/" onClick={closeAll}>
+              <TopLink href="/" onClick={closeAll} light={overHero}>
                 Home
               </TopLink>
             </li>
             <li onMouseEnter={() => hoverOpen("what-we-do")}>
               <MenuButton
-                label="What We Do"
+                label="What we do"
+                light={overHero}
                 open={menu === "what-we-do"}
                 onToggle={() => setMenu(menu === "what-we-do" ? null : "what-we-do")}
               />
@@ -126,17 +154,18 @@ export function Navbar() {
             <li onMouseEnter={() => hoverOpen("products")}>
               <MenuButton
                 label="Products"
+                light={overHero}
                 open={menu === "products"}
                 onToggle={() => setMenu(menu === "products" ? null : "products")}
               />
             </li>
             <li onMouseEnter={() => canHover() && setMenu(null)}>
-              <TopLink href="/industries/" onClick={closeAll}>
+              <TopLink href="/industries/" onClick={closeAll} light={overHero}>
                 Industries
               </TopLink>
             </li>
             <li onMouseEnter={() => canHover() && setMenu(null)}>
-              <TopLink href="/about/" onClick={closeAll}>
+              <TopLink href="/about/" onClick={closeAll} light={overHero}>
                 About
               </TopLink>
             </li>
@@ -157,7 +186,10 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-ink lg:hidden"
+            className={cn(
+              "inline-flex h-11 w-11 items-center justify-center rounded-lg lg:hidden",
+              overHero ? "text-white" : "text-ink",
+            )}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
           >
@@ -250,7 +282,7 @@ export function Navbar() {
               </MobileLink>
             </ul>
 
-            <MobileGroup title="What We Do" seeAll={{ href: "/what-we-do/", label: "All capabilities" }} onNavigate={() => setMobileOpen(false)}>
+            <MobileGroup title="What we do" seeAll={{ href: "/what-we-do/", label: "All capabilities" }} onNavigate={() => setMobileOpen(false)}>
               {CAPABILITY_MENU.map((c) => (
                 <MobileLink key={c.href} href={c.href} onNavigate={() => setMobileOpen(false)}>
                   {c.label}
@@ -304,17 +336,22 @@ export function Navbar() {
 function TopLink({
   href,
   onClick,
+  light,
   children,
 }: {
   href: string;
   onClick?: () => void;
+  light?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="underline-wipe text-[17px] font-medium text-ink transition-colors hover:text-brand"
+      className={cn(
+        "underline-wipe text-[17px] font-medium transition-colors hover:text-brand",
+        light ? "text-white" : "text-ink",
+      )}
     >
       {children}
     </Link>
@@ -325,17 +362,22 @@ function MenuButton({
   label,
   open,
   onToggle,
+  light,
 }: {
   label: string;
   open: boolean;
   onToggle: () => void;
+  light?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-expanded={open}
-      className="inline-flex items-center gap-1.5 text-[17px] font-medium text-ink transition-colors hover:text-brand"
+      className={cn(
+        "inline-flex items-center gap-1.5 text-[17px] font-medium transition-colors hover:text-brand",
+        light ? "text-white" : "text-ink",
+      )}
     >
       {label}
       <svg

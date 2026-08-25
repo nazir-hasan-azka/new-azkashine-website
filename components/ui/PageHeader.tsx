@@ -19,7 +19,9 @@ export function PageHeader({
 }) {
   return (
     <section className="relative isolate overflow-hidden border-b border-border bg-surface-2">
-      {/* Ported from the previous site: skewed tiles that light up under the cursor. */}
+      {/* Interactive tiles, ported from the previous site — they light up under the
+          cursor. Tried the flowing-line motif here instead; it was calmer but static,
+          and the header needs something that responds. */}
       <GridPattern
         yOffset={-96}
         interactive

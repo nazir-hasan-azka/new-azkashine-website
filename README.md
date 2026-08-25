@@ -59,10 +59,26 @@ screenshotted — the only real screens in the decks are 1152×648 and smaller.
 **Imagery.** 18 curated WebP images, none reused, from Azkashine's own asset repo, the
 product catalogs, and two CC0 photographs.
 
+**Hero.** Full-viewport dark canvas with particle streams converging on a bright point,
+generated in code (~4KB) rather than shipped as video. The navbar sits transparently over
+it and turns solid on scroll; the logo swaps to a light variant while it does. Pauses when
+off-screen, when the tab is hidden, and renders a single static frame under reduced motion.
+
+**Product slider.** All nine products, one at a time, in a horizontally sliding track so
+the motion is direction-aware. Copy staggers in on the active slide. Autoplay pauses on
+hover, focus, hidden tab, and reduced motion. Keyboard arrows and touch swipe supported.
+Every slide stays mounted as a real link, so all nine remain crawlable.
+
 **Motion.** Duration/easing tokens, card lift, button press, arrow nudge, underline wipe,
 dropdown entrance, native CSS scroll reveals, stat count-up, and the interactive tile
-backdrop ported from the previous site. **No animation dependency** — all CSS.
-`prefers-reduced-motion` honoured throughout.
+backdrop ported from the previous site. **No animation dependency** — the only runtime
+dependencies are `next`, `react`, and `react-dom`. `prefers-reduced-motion` honoured
+throughout.
+
+**Copy.** Sentence case for every heading and nav label, site-wide. Section copy states
+things a reader can check rather than positions we hold — "Why choose us" points at nine
+products in production, AI-specific validation as a service, and governance defaults,
+each traceable to a deck.
 
 ### Deliberately omitted
 
@@ -89,13 +105,28 @@ backdrop ported from the previous site. **No animation dependency** — all CSS.
 | **Deck image licensing** | Provenance of the product-catalog imagery is unconfirmed. If any came from an unlicensed source, it should be swapped before the site goes to the production domain. |
 | **A consistent icon set** | The decks use different palettes per product (Tawthiq mint, Agent Siddhi orange, AgentOS blue) against a cyan brand. The three "Why choose us" cards still use Figma-template 3D renders. One coherent set would fix this properly. |
 
+### Launch readiness — none of this exists yet
+
+The site is not publishable to a production domain until these are in place. This is the
+largest single gap remaining.
+
+| Missing | Why it matters |
+|---|---|
+| `app/opengraph-image.tsx` | **No `og:image`.** Every link shared on LinkedIn or WhatsApp renders as a bare grey box. Most costly of these for a company whose prospects share product pages. |
+| `app/sitemap.ts` | Search engines have no route index for the 18 pages |
+| `app/robots.ts` | No crawl directives |
+| JSON-LD | No `Organization` schema — address, phone, and product line are not machine-readable |
+| `app/not-found.tsx` | Still the Next.js default 404 |
+| `app/icon.png` | Only the inherited `favicon.ico`; no PNG or Apple touch icon |
+
 ### Ready to pick up
 
 - **Thin industry pages.** The deck gives four industry names and little else. They ship
   short and honest; deepening them needs sector content.
-- **Four orphaned components** — `Services.tsx`, `Process.tsx`, `Faq.tsx`,
-  `FaqAccordion.tsx` (~296 lines). Their content is template placeholder that contradicts
-  the current IA. Delete or repurpose.
+- **Four orphaned components** — `Services.tsx`, `Process.tsx`, `Faq.tsx` and
+  `HeroBackdrop.tsx` (~307 lines), imported by nothing. The first three are template
+  placeholder contradicting the current IA; `HeroBackdrop` is the original flowing-line
+  motif, kept because it was trialled as an interior banner and may be wanted again.
 - **Arabic / GCC.** The nav reserves a language-toggle slot (marked in `Navbar.tsx`).
   Tawthiq is Arabic-first with SOCPA/CMA/SAMA coverage, so an `/ar` build is a real
   opportunity, not a nicety.
@@ -121,7 +152,11 @@ local dev server. Current state:
 - 18 routes × 390/768/1440 — no horizontal overflow, exactly one `<h1>` each, no dead
   `#` links, no images missing `alt`
 - 15 navigation interaction tests (hover, click-through, keyboard, touch, Escape)
-- 9 motion tests (reveals, hover lift, count-up, reduced-motion)
+- motion tests — canvas hero painting and filling the viewport, scroll reveals, hover
+  lift measured as an actual transform, stat count-up, reduced-motion
+- 8 product-slider tests — direction-aware track movement, copy stagger, autoplay
+  pausing on hover, and all nine products still present as crawlable links
+- stats-band spec test — exactly three products carry one, six deliberately do not
 
 Worth formalising these into a committed `tests/` directory with an `npm test` script —
 they currently live in the session scratchpad.

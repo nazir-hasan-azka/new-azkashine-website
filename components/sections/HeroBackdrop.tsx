@@ -27,17 +27,25 @@ const HERO_LINES = [
   "M2055.94 313.681C1798.34 -50.5107 1509.1 602.37 1056.64 496.887C604.173 391.405 751.591 238.65 518.121 147.13C274.713 51.7141 36.2547 229.626 -142.532 38.8717C-430.85 -268.748 354.167 -622.165 767.948 -541.281C1003.13 -495.309 1466.72 -448.572 1275.93 -197.076",
 ];
 
-export function HeroBackdrop() {
+/**
+ * The flowing line motif from the original design. Used as the banner behind interior
+ * page headers — `preserveAspectRatio="xMidYMid slice"` crops it to whatever height the
+ * header happens to be, rather than forcing the full 820-unit artwork height.
+ */
+export function HeroBackdrop({ className }: { className?: string } = {}) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 z-0 flex justify-center overflow-hidden"
+      className={
+        className ??
+        "pointer-events-none absolute inset-x-0 top-0 z-0 flex justify-center overflow-hidden"
+      }
     >
       <svg
-        className="block h-auto w-full min-w-275"
+        className="block h-full w-full min-w-275"
         viewBox="0 0 1920 820"
         fill="none"
-        preserveAspectRatio="xMidYMin meet"
+        preserveAspectRatio="xMidYMid slice"
       >
         {/* Static by request. A staggered stroke-dash draw was tried here and stuttered:
             animating stroke-dashoffset forces the browser to re-rasterise the whole path

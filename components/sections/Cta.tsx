@@ -1,32 +1,63 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { SITE } from "@/lib/content/site";
 
+/**
+ * Closing call to action.
+ *
+ * Rebuilt to match the rest of the site: dark like the hero, so the page opens and closes
+ * on the same note; sentence case like every other heading; and real buttons instead of a
+ * small grey circle-arrow, which gave no indication of what it did.
+ *
+ * The previous copy — "Embrace the Future of AI Innovation" — was title case and said
+ * nothing. This asks for the one thing we actually want: the problem.
+ */
 export function Cta() {
   return (
-    <section className="relative isolate overflow-hidden bg-linear-to-b from-[#79C1DE] via-[#B8D8E6] to-[#FAFBFF]">
+    <section
+      aria-labelledby="cta-heading"
+      className="relative isolate overflow-hidden bg-blue-900"
+    >
+      {/* Same convergence glow as the hero, so the bookend reads deliberately. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(60%_120%_at_75%_0%,rgba(92,194,237,0.28)_0%,rgba(33,133,248,0.10)_45%,transparent_75%)]"
+      />
+
       <Container>
-        <div className="flex flex-col items-center py-20 text-center lg:py-28">
-          <h2 className="max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[68px] lg:leading-[1.1]">
-            Embrace the Future of AI Innovation
-          </h2>
-          <p className="mt-5 max-w-xl text-center font-[family-name:var(--font-manrope)] text-[15px] font-normal leading-8 tracking-[0.2px] text-black/60">
-            Let us know what challenges you are trying to solve so we can help.
-          </p>
-          <Link
-            href="/contact/"
-            aria-label="Get in touch"
-            className="mt-8 flex h-14 w-14 items-center justify-center rounded-full border border-[#999999]/50 transition-colors hover:bg-white/10"
+        <div className="max-w-4xl py-20 lg:py-28">
+          <h2
+            id="cta-heading"
+            className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-[52px]"
           >
-            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden>
-              <path
-                d="M0.799988 12.7998H23.0857M12.8 0.799805L24.8 12.7998L12.8 24.7998"
-                stroke="#999999"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+            Tell us what you&rsquo;re trying to solve
+          </h2>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70 lg:text-xl">
+            Bring us the problem, not a specification. We&rsquo;ll tell you which of our
+            products fits, what we&rsquo;d have to build, or whether you&rsquo;d be better
+            served elsewhere.
+          </p>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <Link
+              href="/contact/"
+              className="btn-motion inline-flex h-13 items-center justify-center rounded-md bg-brand-light px-8 text-lg font-semibold text-ink hover:opacity-90"
+            >
+              Talk to us
+            </Link>
+            <Link
+              href="/products/"
+              className="btn-motion inline-flex h-13 items-center justify-center rounded-md border border-white/25 px-8 text-lg font-semibold text-white hover:bg-white/10"
+            >
+              See the products
+            </Link>
+            <a
+              href={`mailto:${SITE.email}`}
+              className="text-base font-medium text-white/70 underline underline-offset-4 transition-colors hover:text-white"
+            >
+              {SITE.email}
+            </a>
+          </div>
         </div>
       </Container>
     </section>
