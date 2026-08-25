@@ -39,6 +39,11 @@ export function HeroBackdrop() {
         fill="none"
         preserveAspectRatio="xMidYMin meet"
       >
+        {/* Static by request. A staggered stroke-dash draw was tried here and stuttered:
+            animating stroke-dashoffset forces the browser to re-rasterise the whole path
+            on every frame — it cannot run on the compositor the way transform/opacity
+            can — and twenty simultaneous 4531-unit paths overwhelmed that. Motion on this
+            backdrop would need transform or opacity, not path geometry. */}
         <g stroke="url(#heroLine)" strokeWidth="1.1" strokeLinecap="round">
           {HERO_LINES.map((d, i) => (
             <path key={i} d={d} />

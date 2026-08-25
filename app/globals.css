@@ -39,6 +39,19 @@
 
   /* Type */
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion — a small, fixed vocabulary. Every transition on the site picks from
+     these; components do not invent their own timings. Matching the range the
+     reference sites actually use (150ms–600ms on transform/opacity/colour). */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --dur-fast: 150ms;   /* colour, opacity — feedback that should feel instant */
+  --dur-base: 250ms;   /* lifts, shadows, the default */
+  --dur-slow: 400ms;   /* panels, larger movement */
+  --dur-slower: 700ms; /* reveals */
 }
 
 html {
@@ -55,4 +68,174 @@ body {
   background: var(--color-background);
   color: var(--color-ink);
   font-family: var(--font-sans);
+}
+
+/* ─── Focus ──────────────────────────────────────────────────────────────────
+   One visible focus style everywhere. Keyboard users get a ring; mouse users
+   never see it. */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Micro-interactions ─────────────────────────────────────────────────────
+   Only transform / opacity / colour / shadow are animated — all compositor-
+   friendly, so none of this touches layout. */
+
+/* Card lift. Pair with a shadow utility on the element itself. */
+.lift {
+  transition:
+    transform var(--dur-base) var(--ease-out-soft),
+    box-shadow var(--dur-base) var(--ease-out-soft),
+    border-color var(--dur-base) var(--ease-out-soft);
+}
+.lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Arrow that nudges right when its parent (or itself) is hovered. */
+.nudge {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out-soft);
+}
+.group:hover .nudge,
+a:hover > .nudge,
+button:hover > .nudge {
+  transform: translateX(4px);
+}
+
+/* Button press + hover lift. */
+.btn-motion {
+  transition:
+    transform var(--dur-fast) var(--ease-out-soft),
+    box-shadow var(--dur-base) var(--ease-out-soft),
+    opacity var(--dur-fast) linear,
+    background-color var(--dur-fast) linear;
+}
+.btn-motion:hover {
+  transform: translateY(-2px);
+}
+.btn-motion:active {
+  transform: translateY(0);
+}
+
+/* Underline that wipes in from the left. */
+.underline-wipe {
+  position: relative;
+}
+.underline-wipe::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-base) var(--ease-out-soft);
+}
+.underline-wipe:hover::after,
+.underline-wipe:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Image zoom inside a clipped frame — the frame stays put, the image grows. */
+.zoom-frame {
+  overflow: hidden;
+}
+.zoom-frame img,
+.zoom-frame .zoom-target {
+  transition: transform var(--dur-slow) var(--ease-out-soft);
+}
+.zoom-frame:hover img,
+.group:hover .zoom-frame .zoom-target {
+  transform: scale(1.04);
+}
+
+/* Dropdown panel entrance. */
+.panel-in {
+  animation: panel-in var(--dur-base) var(--ease-out-soft) both;
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Grid-pattern tile pulse ────────────────────────────────────────────────
+   The tile under the cursor lights instantly, then fades. Framer-motion did this
+   on the old site with values [0,1,0] at times [0,0,1]; this is the same curve. */
+@keyframes tile-pulse {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.tile-pulse {
+  animation: tile-pulse 1s linear forwards;
+}
+
+/* ─── Scroll reveals ─────────────────────────────────────────────────────────
+   Native CSS scroll-driven animation — no JavaScript, runs on the compositor.
+   Guarded by @supports: browsers without it simply show the content, which is
+   the correct fallback. Notably, none of the eighteen reference sites audited
+   used this yet, though support is now broad. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Ranges stay inside the `entry` phase and finish before the element is fully in
+       view. An earlier version ran to `cover 22%`, which left cards still at opacity 0
+       while sitting in the middle of the viewport — content must never be unreadable
+       just because it is mid-scroll. */
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+
+    /* Stagger: later children finish a little later. With a scroll timeline,
+       animation-delay does nothing — the offset has to live in the range. */
+    .reveal-group > * {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .reveal-group > *:nth-child(2) { animation-range: entry 0% entry 65%; }
+    .reveal-group > *:nth-child(3) { animation-range: entry 0% entry 75%; }
+    .reveal-group > *:nth-child(4) { animation-range: entry 0% entry 85%; }
+    .reveal-group > *:nth-child(n + 5) { animation-range: entry 0% entry 95%; }
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────
+   One global off-switch. Anything essential must still be legible without it,
+   so reveals resolve to their finished state rather than staying hidden. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lift:hover,
+  .btn-motion:hover {
+    transform: none;
+  }
 }

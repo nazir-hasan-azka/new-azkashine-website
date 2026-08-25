@@ -1,67 +1,99 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { CATEGORIES } from "@/lib/content/taxonomy";
+import { PRODUCTS } from "@/lib/content/products";
+import { INDUSTRIES } from "@/lib/content/industries";
+import { SITE } from "@/lib/content/site";
 
-const NAV_LINKS = [
-  "Home",
-  "About us",
-  "Services",
-  "Products",
-  "Contact Us",
-  "Careers",
-];
-const SOCIAL_LINKS = ["Facebook", "Instagram", "GitHub", "LinkedIn"];
-
+/**
+ * Footer doubles as the site's full sitemap — every route is reachable from here, which
+ * is the pattern every strong reference site in the research shares.
+ */
 export function Footer() {
   return (
-    <footer className="bg-background">
+    <footer className="border-t border-border bg-background">
       <Container>
-        <div className="flex flex-col gap-12 py-16 lg:flex-row lg:justify-between lg:py-20">
-          <Image
-            src="/azkashine-logo.png"
-            alt="Azkashine"
-            width={133}
-            height={37}
-            className="h-9 w-auto"
+        <div className="grid gap-10 py-14 lg:grid-cols-[1.2fr_repeat(4,1fr)] lg:gap-8 lg:py-20">
+          <div>
+            <Image
+              src="/azkashine-logo.png"
+              alt="Azkashine"
+              width={133}
+              height={37}
+              className="h-9 w-auto"
+            />
+            <address className="mt-6 text-sm not-italic leading-relaxed text-muted">
+              {SITE.address.lines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </address>
+            <p className="mt-3 text-sm text-muted">{SITE.landline}</p>
+            <a
+              href={`mailto:${SITE.email}`}
+              className="mt-1 inline-block text-sm text-ink underline underline-offset-4"
+            >
+              {SITE.email}
+            </a>
+          </div>
+
+          <FooterColumn
+            title="What We Do"
+            links={[
+              ...CATEGORIES.map((c) => ({
+                label: c.name,
+                href: `/what-we-do/${c.slug}/`,
+              })),
+              { label: "All capabilities", href: "/what-we-do/" },
+            ]}
           />
 
-          <div className="flex flex-col gap-10 sm:flex-row sm:gap-16 lg:gap-24">
-            <FooterColumn links={NAV_LINKS} />
-            <FooterColumn links={SOCIAL_LINKS} />
+          {/* Nine products split across two columns, both labelled — an unlabelled
+              continuation column reads as a rendering fault. */}
+          <FooterColumn
+            title="Products"
+            links={PRODUCTS.slice(0, 5).map((p) => ({
+              label: p.name,
+              href: `/products/${p.slug}/`,
+            }))}
+          />
 
-            <div className="text-sm leading-relaxed text-muted">
-              <address className="not-italic">
-                No.73, 3rd floor, Fountain Head Building,
-                <br />
-                Varthur Road, Nagavarapalya, C V Raman Nagar (Post),
-                <br />
-                Bengaluru - 560093, Karnataka, India.
-              </address>
-              <p className="mt-3">080-25301553</p>
-              <a
-                href="mailto:contact@azkashine.com"
-                className="mt-1 inline-block text-ink underline"
-              >
-                contact@azkashine.com
-              </a>
-            </div>
-          </div>
+          <FooterColumn
+            title="More products"
+            links={[
+              ...PRODUCTS.slice(5).map((p) => ({
+                label: p.name,
+                href: `/products/${p.slug}/`,
+              })),
+              { label: "All products", href: "/products/" },
+            ]}
+          />
+
+          <FooterColumn
+            title="Company"
+            links={[
+              { label: "About", href: "/about/" },
+              { label: "Industries", href: "/industries/" },
+              ...INDUSTRIES.map((i) => ({
+                label: i.name,
+                href: `/industries/#${i.slug}`,
+              })),
+              { label: "Contact", href: "/contact/" },
+            ]}
+          />
         </div>
 
         <div className="flex flex-col gap-3 border-t border-border py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-6">
-            <Link href="#" className="hover:text-ink">
-              Terms of Use
-            </Link>
-            <Link href="#" className="hover:text-ink">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="hover:text-ink">
-              About Cookies
-            </Link>
-          </div>
           <p className="text-xs">
-            Copyright © 2026 Azkashine. All rights reserved.
+            {SITE.legalName}. All rights reserved.
+          </p>
+          <p className="text-xs">
+            Bengaluru, India &middot;{" "}
+            <a href={`mailto:${SITE.email}`} className="hover:text-ink">
+              {SITE.email}
+            </a>
           </p>
         </div>
       </Container>
@@ -69,16 +101,25 @@ export function Footer() {
   );
 }
 
-function FooterColumn({ links }: { links: string[] }) {
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
   return (
-    <ul className="space-y-3 text-sm text-muted">
-      {links.map((label) => (
-        <li key={label}>
-          <Link href="#" className="transition-colors hover:text-ink">
-            {label}
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-ink">{title}</p>
+      <ul className="mt-4 space-y-2.5 text-sm text-muted">
+        {links.map((link) => (
+          <li key={link.href + link.label}>
+            <Link href={link.href} className="transition-colors hover:text-brand">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

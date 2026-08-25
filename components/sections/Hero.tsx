@@ -29,8 +29,8 @@ export function Hero() {
 
           {/* CTA */}
           <Link
-            href="#contact"
-            className="mt-10 inline-flex h-13 items-center justify-center rounded-none bg-brand-light px-8 text-lg font-semibold text-ink transition-opacity hover:opacity-90"
+            href="/contact/"
+            className="btn-motion mt-10 inline-flex h-13 items-center justify-center rounded-none bg-brand-light px-8 text-lg font-semibold text-ink hover:opacity-90 hover:shadow-[0_10px_28px_rgba(92,194,237,0.45)]"
           >
             Book a demo
           </Link>

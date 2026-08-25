@@ -13,7 +13,7 @@ export function Cta() {
             Let us know what challenges you are trying to solve so we can help.
           </p>
           <Link
-            href="#contact"
+            href="/contact/"
             aria-label="Get in touch"
             className="mt-8 flex h-14 w-14 items-center justify-center rounded-full border border-[#999999]/50 transition-colors hover:bg-white/10"
           >

@@ -34,7 +34,7 @@ export function Faq() {
               Still have questions? Feel free to get in touch with us today!
             </p>
             <Link
-              href="#contact"
+              href="/contact/"
               className="mt-7 inline-flex h-13 items-center justify-center rounded-none bg-brand-light px-8 text-lg font-semibold text-ink transition-opacity hover:opacity-90"
             >
               Contact Us
