@@ -23,6 +23,7 @@ See `README.md` for what is done, what is pending, and the known gaps.
 - `npm run start` — serve production build
 - `npm run lint` — ESLint
 - `npx tsc --noEmit` — type check
+- `npm test` — Playwright interaction suites (needs `npm run dev` running)
 
 ## Project structure
 
@@ -118,6 +119,14 @@ or it pushes past the page gutter on narrow screens.
 - Designs are the source of truth for spacing, color, type scale, and breakpoints.
 - Match the design system exactly; if a value isn't specified, follow the nearest token.
 - Mobile-first; verify each breakpoint the design defines.
+
+## Testing
+
+`npm test` runs five Playwright suites against a running dev server. **Run them after any
+change to navigation, motion, the slider, or layout** — they assert on measured geometry
+and computed styles, so they catch things a screenshot cannot. `tests/README.md` records
+the four real bugs that prompted them and the gotchas (hydration waits, mouse parking,
+and the fact that full-page screenshots do not resolve scroll-driven animations).
 
 ## Workflow
 

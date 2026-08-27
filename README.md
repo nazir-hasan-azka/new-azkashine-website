@@ -144,8 +144,14 @@ largest single gap remaining.
 
 ## Verification
 
-There is no test runner in `package.json`; checks are Playwright scripts run against a
-local dev server. Current state:
+```bash
+npm run dev     # one terminal
+npm test        # another — 43 assertions across 5 suites
+```
+
+Playwright scripts, no test framework: they drive a real browser and assert on computed
+styles and measured geometry rather than screenshots. See `tests/README.md` for what each
+suite covers and the bugs that prompted it. Current state:
 
 - `npx tsc --noEmit` and `npm run lint` — clean
 - `npm run build` — all 18 routes export as static HTML
@@ -158,8 +164,7 @@ local dev server. Current state:
   pausing on hover, and all nine products still present as crawlable links
 - stats-band spec test — exactly three products carry one, six deliberately do not
 
-Worth formalising these into a committed `tests/` directory with an `npm test` script —
-they currently live in the session scratchpad.
+All five live in `tests/` and run via `npm test`, which exits non-zero on failure.
 
 ---
 
